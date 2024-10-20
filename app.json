@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "206d4341-ccfd-46e2-bd86-b33077263ae8"
+      }
+    },
+    "owner": "varungaikwad"
   }
 }
