@@ -1,11 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { SignedIn, SignedOut, useOAuth, useUser } from "@clerk/clerk-expo";
+import {
+  SignedIn,
+  SignedOut,
+  useAuth,
+  useOAuth,
+  useUser,
+} from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { styles } from "@/styles/default";
 
 export default function ProfileScreen() {
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" }),
+    { signOut } = useAuth(),
     router = useRouter(),
     { user } = useUser(),
     onLoginPress = async () => {
@@ -22,10 +30,30 @@ export default function ProfileScreen() {
   return (
     <>
       <SignedIn>
-        <Text>{user?.emailAddresses[0].emailAddress}</Text>
+        <View style={styles.signInContainer}>
+          <View style={styles.profileContainer}>
+            <Image
+              source={{ uri: user?.imageUrl }}
+              style={{ width: 100, height: 100, borderRadius: 100 }}
+            />
+            <Text>{[user?.firstName].join(" ")}</Text>
+            <View>
+              <Text>{user?.emailAddresses[0].emailAddress}</Text>
+            </View>
+          </View>
+          <View>
+            <TouchableOpacity
+              style={styles.signOutButton}
+              onPress={signOut as any}
+            >
+              <Ionicons name="log-out" size={24} />
+              <Text>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </SignedIn>
       <SignedOut>
-        <View style={styles.container}>
+        <View style={styles.signOutContainer}>
           <TouchableOpacity style={styles.buttonBody} onPress={onLoginPress}>
             <Ionicons name="logo-google" size={24} />
             <Text>Continue with Google</Text>
@@ -35,22 +63,3 @@ export default function ProfileScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonBody: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    padding: 10,
-    borderWidth: 2,
-    borderRadius: 5,
-    borderColor: "lightgray",
-    backgroundColor: "lightgray",
-  },
-});
